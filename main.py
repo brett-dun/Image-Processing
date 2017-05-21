@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 __author__ = "Brett Duncan"
 __copyright__ = "Copyright 2017, Brett Duncan"
 __credits__ = []
@@ -9,51 +10,42 @@ __maintainer__ = "Brett Duncan"
 __email__ = ""
 __status__ = "Experimental"
 
+
+import sys
 from PIL import Image
 import numpy as num
 
-NUM_PHOTOS = 29
+
+SCALER_N = 1 #Numerator of the scaler
+SCALER_D = 1 #Denomoninator of the scaler
+COLORS = 255 #Number of colors
+
 
 def main():
     
-    im = Image.open('IMG_4300.jpg')
-    print('IMG_4300.jpg');
-    #images = [ num.array(im) ]
+    print('STARTING')
+    file_paths = sys.argv[1:] #Read in the file names
     
-    sum = num.array(im)
-    #print(sum)
+    sum = num.array( Image.open( file_paths[0] ) ) #Create the list
+    sum -= num.array( Image.open( file_paths[0] ) ) #Set the list's values to zero
     
-    for i in range(1,NUM_PHOTOS):
-        if i < 10:
-            name = 'IMG_430' + str(i) + '.jpg'
-        else:
-            name = 'IMG_43' + str(i) + '.jpg'
-        print(name)
-        im = Image.open( name )
-        sum += num.array(im);
-        #print(sum);
+    count = 0
+    for p in file_paths: #For each file
+        
+        #print(p)
+        im = Image.open( p ) #Open the image
+        imageArray = num.array( im ) #Save the image as an array
+        
+        imageArray = (imageArray / (255/COLORS)) * (255/COLORS) #Save the array with a preset number of colors
+        
+        sum += imageArray #Add this to the sum
+        count += 1 #Increment the count
             
-    average = num.array(sum) / (NUM_PHOTOS)
-    #print('Result')
-    #print(average)
-    im = Image.fromarray(average)
-    im.save('test.jpg')
-    print('DONE')
-
-    """sum = num.array(im)
+        average = num.array(sum) / count * SCALER_N / SCALER_D #Find the average and process the image using the scalers
     
-    for i in range(0,29):
-        if i < 10:
-            name = 'IMG_430' + str(i) + '.jpg'
-        else:
-            name = 'IMG_43' + str(i) + '.jpg'
-        print(name)
-        im = Image.open( name )
-        imageArray = num.array(im)
-
-        for j in range imageArray.shape[0]:
-            for"""
-
+    im = Image.fromarray(average) #Store the array to an image
+    im.save('test.jpg') #Write the image to a file
+    print('DONE')
 
 
 if __name__ == '__main__':
