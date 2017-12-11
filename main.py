@@ -1,50 +1,38 @@
 #!/usr/bin/env python
 
-
-__author__ = "Brett Duncan"
-__copyright__ = "Copyright 2017, Brett Duncan"
-__credits__ = []
-__license__ = ""
-__version__ = "0.0.0"
-__maintainer__ = "Brett Duncan"
-__email__ = ""
-__status__ = "Experimental"
-
-
 import sys
 from PIL import Image
-import numpy as num
-
-
-SCALER_N = 1 #Numerator of the scaler
-SCALER_D = 1 #Denomoninator of the scaler
-COLORS = 255 #Number of colors
+import numpy as np
 
 
 def main():
     
     print('STARTING')
-    file_paths = sys.argv[1:] #Read in the file names
     
-    sum = num.array( Image.open( file_paths[0] ) ) #Create the list
-    sum -= num.array( Image.open( file_paths[0] ) ) #Set the list's values to zero
+    scaler_n = int(sys.argv[1]) #Scaler numerator (positive integer, larger value increases brightness)
+    scaler_d = int(sys.argv[2]) #Scaler denominator  (positive integer, larger value decreases brightness)
+    colors = int(sys.argv[3]) #Number of colors
+    file_paths = sys.argv[4:] #Read in the file names
+    
+    sum = np.array( Image.open( file_paths[0] ) ) #Create the list
+    sum = 0 #Set the list equal to zero
     
     count = 0
     for p in file_paths: #For each file
         
-        #print(p)
+        print(p) #print the file to let us know which file is being processed
         im = Image.open( p ) #Open the image
-        imageArray = num.array( im ) #Save the image as an array
+        imageArray = np.array( im ) #Save the image as an array
         
-        imageArray = (imageArray / (255/COLORS)) * (255/COLORS) #Save the array with a preset number of colors
+        imageArray = (imageArray / (255/colors)) * (255/colors) #Save the array with a preset number of colors
         
         sum += imageArray #Add this to the sum
         count += 1 #Increment the count
             
-        average = num.array(sum) / count * SCALER_N / SCALER_D #Find the average and process the image using the scalers
+    average = np.array(sum) / count * scaler_n / scaler_d #Find the average and process the image using the scalers
     
-    im = Image.fromarray(average) #Store the array to an image
-    im.save('test.jpg') #Write the image to a file
+    output = Image.fromarray(average) #Store the array to an image
+    output.save('test.jpg') #Write the image to a file
     print('DONE')
 
 
