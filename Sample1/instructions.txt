@@ -1,0 +1,3 @@
+Numerator = 2
+Denomenator = 1
+Colors = 16
